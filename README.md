@@ -1,6 +1,6 @@
 # GooglePlusPlus Hide Sidebars
 
-The `googleplusplus_hide_sidebars` user script changes appearance of Google Plus (aka Google+ aka G+) by hiding left and right side bars and widening main content containers. This feature is sticky and will show either a Hide Sidebars link or Show Sidebars link.
+The `googleplusplus_hide_sidebars` is a user script for Google Plus (aka Google+ aka G+) that adds a feature to hide/show left and right side bars, and makes the main content wider. This feature is sticky and will show either a Hide Sidebars link or Show Sidebars link.
 
 > **Install**: <http://go.wittman.org/wdjg>
 
