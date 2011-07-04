@@ -4,6 +4,8 @@ The `googleplusplus_hide_sidebars` is a user script for Google Plus (aka Google+
 
 > **Install**: <http://go.wittman.org/wdjg>
 
+> Discussion: <https://plus.google.com/111309687695898923996/posts/SHtNFsqHxna>
+
 So far, this userscript was tested in Google Chrome 12 and Firefox 5 (Greasemonkey required) (on OS X).
 
 Feedback is welcome.
