@@ -4,7 +4,7 @@
 // @namespace      http://wittman.org/projects/googleplusplus_hide_sidebars
 // @include        *plus.google.com*
 // @description	   Changes appearance of Google Plus by hiding left and right side bars and widening main content containers. (Version 0.1.3 and earlier was originally release as simply googleplusplus).
-// @version        0.1.5
+// @version        0.1.6
 // ==/UserScript==
 
 function hideSidebars(){
@@ -13,10 +13,6 @@ function hideSidebars(){
 		if(logging) {
 			console.log(txt);
 		}
-	}
-	
-	function isUnset(inp) {
-		return (typeof inp === 'undefined')
 	}
 	
 	function setItem(key, value) {
@@ -35,9 +31,10 @@ function hideSidebars(){
 		var v;
 		log('Get Item: ' + key);
 		try{
-			v = window.localStorage.getItem(key);
-			if( isUnset(v) ){
+			if( typeof window.localStorage.getItem(key) === 'undefined' ){
 				v = null;
+			}else{
+				v = window.localStorage.getItem(key);
 			}
 		}catch(e){
 			log("Error inside getItem() for key: " + key);
@@ -56,7 +53,7 @@ function hideSidebars(){
 	}
 
 	function GM_setValue(name, value){
-		setItem(name);
+		setItem(name, value);
 	}
 
 	function GM_getValue(name, sDefault){
@@ -77,22 +74,22 @@ function hideSidebars(){
 	}
 	
 	function toInt(n){ return Math.round(Number(n)); }
-	
+
 	/****** Helper functions ******/
 	function do_show(){
 		var cpaneKid = cpane.children(':first');
 		var newPeople = cpaneKid.children().eq(2);
 		var posts = $('.a-b-f-i');
 		
-		cpane.width(574);
-		newPeople.width(532);
-		posts.width(532);
+		cpane.width(cpane_orig_width);
+		newPeople.width(posts_orig_width);
+		posts.width(posts_orig_width);
 		
 		leftbar.show();
 		rightbar.show();
 	}
 	function do_hide(){
-		cpane.width(800);
+		cpane.width(cpane_new_width);
 		leftbar.hide();
 		rightbar.hide();
 		var cpaneKid = cpane.children(':first');
@@ -102,12 +99,12 @@ function hideSidebars(){
 		var topbar = $('#gbx4');
 
 		var postWidth = toInt(topbar.width() * wfactorPost);
-		if(postWidth > 1306){
-			postWidth = 1306;
+		if(postWidth > post_width_max){
+			postWidth = post_width_max;
 		}
 		var newPeopleWidth = toInt(topbar.width() * wfactor);
-		if(newPeopleWidth > 1265){
-			newPeopleWidth = 1265;
+		if(newPeopleWidth > newPeople_width_max){
+			newPeopleWidth = newPeople_width_max;
 		}
 
 		newPeople.width(newPeopleWidth);
@@ -118,6 +115,11 @@ function hideSidebars(){
 	var logging = false;
 	var wfactor = 0.8;
 	var wfactorPost = 0.83;
+	var cpane_orig_width = 574;
+	var cpane_new_width = 800;
+	var posts_orig_width = 532;
+	var post_width_max = 1306;
+	var newPeople_width_max = 1265;
 	var cpane = $('#contentPane');
 	var leftbar = cpane.prev();
 	var rightbar = cpane.next();
@@ -133,12 +135,13 @@ function hideSidebars(){
 	sidebar_left_link.click(function(){
 		var t = $(this);
 		if( t.text().indexOf('Hide Sidebars') > -1 ){
-			do_hide();
 			GM_setValue('gpp__hidden_sidebars', 'hidden');
 			show_hide_saved = 'hidden';
+			do_hide();
 			t.text('Show Sidebars');
 		}else{
 			GM_setValue('gpp__hidden_sidebars', 'shown');
+			console.log(GM_getValue('gpp__hidden_sidebars', '~'));
 			show_hide_saved = 'shown';
 			t.text('Hide Sidebars');
 			do_show();
