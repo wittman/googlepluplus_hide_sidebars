@@ -4,7 +4,7 @@
 // @namespace      http://wittman.org/projects/googleplusplus_hide_sidebars
 // @include        *plus.google.com*
 // @description	   Changes appearance of Google Plus by hiding left and right side bars and widening main content containers. (Version 0.1.3 and earlier was originally release as simply googleplusplus).
-// @version        0.1.8
+// @version        0.1.9
 // ==/UserScript==
 
 function hideSidebars(){
@@ -81,6 +81,27 @@ function hideSidebars(){
 		if(h.indexOf('/circles') > -1){ return true; }
 		return false;
 	}
+	function reloadPage(){
+		window.location.href = window.location.href;
+	}
+	function hookNavButtons(){
+		$(".a-U-T a[href='/photos']").click(function(){
+			setTimeout(function(){
+				reloadPage();
+			}, 2000);
+		});
+		$(".a-U-T a[href='/circles']").click(function(){
+			setTimeout(function(){
+				reloadPage();
+			}, 2000);
+		});
+	}
+	function isProfilePage(){
+		return $('#contentPane').find('.vcard').length > 0;
+	}
+	function isCirclesPage(){
+		return $('#contentPane').find('.oz-sg-people').length > 0;
+	}
 
 	/****** Helper functions ******/
 	function do_show(){
@@ -118,7 +139,15 @@ function hideSidebars(){
 		newPeople.width(newPeopleWidth);
 		posts.width(postWidth);
 	}
-	
+	function do_show_or_hide(){
+		if (cpane.length > 0) {
+			if(show_hide_saved == 'shown'){
+				do_show();
+			}else if( show_hide_saved == 'hidden' ){
+				do_hide();
+			}
+		}
+	}
 	/****** Constants ******/
 	var logging = false;
 	var wfactor = 0.8;
@@ -149,39 +178,28 @@ function hideSidebars(){
 			t.text('Show Sidebars');
 		}else{
 			GM_setValue('gpp__hidden_sidebars', 'shown');
-			console.log(GM_getValue('gpp__hidden_sidebars', '~'));
 			show_hide_saved = 'shown';
 			t.text('Hide Sidebars');
 			do_show();
 		}
 	});
+	hookNavButtons();
 	
 	/****** Loop ******/
 	function main_loop(){
-		if( isExcludedPage() ){
-			window.location.href = window.location.href;
+		if( isProfilePage() || isCirclesPage() ){
+			sidebar_left_link.hide();
 		}
-		if (cpane.length > 0) {
-			if(show_hide_saved == 'shown'){
-				do_show();
-			}else if( show_hide_saved == 'hidden' ){
-				do_hide();
-			}
+		if( !isExcludedPage() ){
+			sidebar_left_link.show();
+			do_show_or_hide();
 		}
+		
 	}
 	
 	/****** Start Loop ******/
 	main_loop();
 	setInterval(main_loop, 2000);
-}
-
-
-/****** Outer function helper functions *******/
-function isExcludedPage(){
-	var h = window.location.href;
-	if(h.indexOf('/photos') > -1){ return true; }
-	if(h.indexOf('/circles') > -1){ return true; }
-	return false;
 }
 
 /****** Load jQuery then callback upon load function ******/
@@ -197,6 +215,4 @@ function addJQuery(callback){
 }
 
 /****** Call Load jQuery + callback function ******/
-if( !isExcludedPage() ){
-	addJQuery(hideSidebars);
-}
+addJQuery(hideSidebars);
