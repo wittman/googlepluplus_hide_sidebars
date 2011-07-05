@@ -4,7 +4,7 @@
 // @namespace      http://wittman.org/projects/googleplusplus_hide_sidebars
 // @include        *plus.google.com*
 // @description	   Changes appearance of Google Plus by hiding left and right side bars and widening main content containers. (Version 0.1.3 and earlier was originally release as simply googleplusplus).
-// @version        0.1.7
+// @version        0.1.8
 // ==/UserScript==
 
 function hideSidebars(){
@@ -74,6 +74,13 @@ function hideSidebars(){
 	}
 	
 	function toInt(n){ return Math.round(Number(n)); }
+
+	function isExcludedPage(){
+		var h = window.location.href;
+		if(h.indexOf('/photos') > -1){ return true; }
+		if(h.indexOf('/circles') > -1){ return true; }
+		return false;
+	}
 
 	/****** Helper functions ******/
 	function do_show(){
@@ -151,6 +158,9 @@ function hideSidebars(){
 	
 	/****** Loop ******/
 	function main_loop(){
+		if( isExcludedPage() ){
+			window.location.href = window.location.href;
+		}
 		if (cpane.length > 0) {
 			if(show_hide_saved == 'shown'){
 				do_show();
@@ -163,7 +173,15 @@ function hideSidebars(){
 	/****** Start Loop ******/
 	main_loop();
 	setInterval(main_loop, 2000);
-	
+}
+
+
+/****** Outer function helper functions *******/
+function isExcludedPage(){
+	var h = window.location.href;
+	if(h.indexOf('/photos') > -1){ return true; }
+	if(h.indexOf('/circles') > -1){ return true; }
+	return false;
 }
 
 /****** Load jQuery then callback upon load function ******/
@@ -179,4 +197,6 @@ function addJQuery(callback){
 }
 
 /****** Call Load jQuery + callback function ******/
-addJQuery(hideSidebars);
+if( !isExcludedPage() ){
+	addJQuery(hideSidebars);
+}
