@@ -4,7 +4,7 @@
 // @namespace      http://wittman.org/projects/googleplusplus_hide_sidebars
 // @include        *plus.google.com*
 // @description	   Changes appearance of Google Plus by hiding left and right side bars and widening main content containers. (Version 0.1.3 and earlier was originally release as simply googleplusplus).
-// @version        0.1.9
+// @version        0.2.0
 // ==/UserScript==
 
 function hideSidebars(){
@@ -205,7 +205,7 @@ function hideSidebars(){
 /****** Load jQuery then callback upon load function ******/
 function addJQuery(callback){
 	var script = document.createElement("script");
-	script.setAttribute("src", "http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
+	script.setAttribute("src", protocol + "ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
 	script.addEventListener('load', function() {
 		var script = document.createElement("script");
 		script.textContent = "(" + callback.toString() + ")();";
@@ -215,4 +215,5 @@ function addJQuery(callback){
 }
 
 /****** Call Load jQuery + callback function ******/
+var protocol = window.location.protocol + '//';
 addJQuery(hideSidebars);
